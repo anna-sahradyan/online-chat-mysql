@@ -1,27 +1,31 @@
+const form = document.querySelector('form');
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-document.querySelector("#email").addEventListener("submit", () => {
-    const login = {
-        email: email.value,
-        password: password.value
-    }
-    fetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify(login),
-        headers: {
-            "Content-Type": "application/json"
+    try {
+        const response = await fetch("http://localhost:8080/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({email, password})
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            error.style.display = "block";
+            success.style.display = "none";
+            error.innerHTML = data.message;
+        } else {
+            success.style.display = "block";
+            error.style.display = "none";
+            success.innerHTML = "Login successful!";
+            document.getElementById('email').value= "";
+            document.getElementById('password').value = "";
         }
-    }).then(res => res.json())
-        .then(data => {
-            if (data.status === "error") {
-                success.style.display = "none"
-                error.style.display = "block"
-                error.innerHTML = data.error
-            }
-            else{
-                success.style.display = "block"
-                error.style.display = "none"
-                error.innerHTML = data.success
-            }
-        })
-})
-
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
