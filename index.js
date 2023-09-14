@@ -4,7 +4,7 @@ const db = require("./db.config");
 const cookie = require("cookie-parser");
 const PORT = process.env.PORT || 8080;
 const cors= require("cors");
-
+const userRouter = require("./routes/auth-route");
 //?MIDDLEWARE
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -13,7 +13,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use('/', require('./routes/pages-route'));
-// app.use('/auth', require('./routes/auth'));
+app.use('/auth',userRouter);
 db.connect((err) => {
     if (err) throw err;
     console.log("database connected")
